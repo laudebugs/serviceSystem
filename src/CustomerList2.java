@@ -17,6 +17,11 @@ public class CustomerList2 {
 	private static int longestQueue = 0;
 	private static int currentQueue = 0;
 	
+	/*
+	 * This is the reference to the first node on the list
+	 */
+	private Node first = null;
+	
 	public static boolean isPm() {
 		return pm;
 	}
@@ -84,28 +89,48 @@ public class CustomerList2 {
 		public Node next = null;
 	}
 	Customer end = new Customer();
-	//Node endNode = new Node();
 	
-	private Node first;
+	
 	public CustomerList2() {
 		this.setFirst(null);
 	}
+	/**
+	 * Sets the first node to be null
+	 * @param a node that is null
+	 */
 	public void setFirst(Node n) {
 		this.first = n;
 	}
 	public void addLast(Customer c) {
-		Node newNode = new Node ();
-		newNode.data = c;
-		newNode.next= null;
 		//Iterate through al the elements to add the new Node to the end of the list
 		Iterator temp = new Iterator();
-		temp.position= this.first;
-		while(temp.hasNext()) {
-			temp.next();
+		temp.position=this.first;
+			
+		Node newNode = new Node ();
+		newNode.data = c;
+		newNode.next=null;	
+		
+		 if(this.first==null) {
+			this.first = newNode;
+			temp.position = newNode;
+			
+		}
+		else {
+			
+			while(temp.hasNext()) {
+				temp.next();
+			}
+			
+
+			temp.previous= temp.position;
+			temp.position.next=newNode;
 		}
 		
+
+		
+
 		//Add the waiting time for each new Customer added
-		temp.position.next=newNode;
+		//temp.position=newNode;
 		if (newNode.data.getEntry_time()-temp.position.data.getEntry_time()<CustomerList2.serveTime//If time difference is less than service time
 				) {
 			newNode.data.wait_time=temp.position.data.wait_time+(CustomerList2.serveTime-(newNode.data.getEntry_time()-temp.position.data.getEntry_time()));
@@ -154,6 +179,7 @@ public class CustomerList2 {
 				return false;
 			}
 			else {
+				
 				return true;
 			}
 		}
@@ -172,14 +198,10 @@ public class CustomerList2 {
 			if (!this.hasNext()) {
 				throw new NoSuchElementException();
 			}
-			this.previous = position;
-			if (this.position ==null) {
-				position = first;
-			}
-			else {
-				this.position =position.next;
-			}
-			return position.data;//Returns a customer object with ID and entry time
+
+			this.previous = this.position;
+			this.position = this.previous.next;
+			return previous.data;//Returns a customer object with ID and entry time
 		}
 
 		@Override
@@ -231,12 +253,15 @@ public class CustomerList2 {
 			// TODO Auto-generated method stub
 			
 		}
+		public void removeFirst() {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 	
 	
 	public static void main(String[]args) throws FileNotFoundException{
-		System.out.println("Hello World.");
 		String f1path = "customersfile.txt";
 		String f2path = "queriesfile.txt";
 		FileReader customers = new FileReader(f1path);
@@ -261,26 +286,28 @@ public class CustomerList2 {
 			String temp = "";
 			String thisLine = "";
 			while((thisLine= readCustomers.readLine())!=null) {
-				
+
 				if(temp.length()>0 && thisLine.isEmpty() ) {
 					//Create a new Customer and add the customer to the Customer LinkedList
-					
 					clist.addLast(clist.new Customer(temp));
 					
 					//Reset the data read from the file
 					temp = "";
-					break;
 				}
 				else if (thisLine.isEmpty()) {
 					continue;
 				}
 				else {
-					temp+= thisLine;temp+="\n";
+					temp+= thisLine;
+					temp+="\n";
 				}
 				
 			}
+			//Add the last customer on the Queue- since the loop will not add them
+			clist.addLast(clist.new Customer(temp));
 		} 
 		catch (IOException e) {
+			
 			e.printStackTrace();
 		}
 		String result ="";
@@ -300,27 +327,25 @@ public class CustomerList2 {
 						find_id+=thisLine.charAt(i);
 					}
 				}
+				
 				Iterator temp = clist.new Iterator();
+				temp.position=clist.first;
+				
 				while(temp.hasNext()) {
 					if (temp.position.data.getId()==Integer.parseInt(find_id)) {
 						result += temp.position.data.getId()+"\n";
-						break;
 					}
+					temp.next();
 				}
 			}
 			
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("here");
 		}
 		System.out.println(result);
-		System.out.println("here");
 	}
-	public void removeFirst() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	
 	
