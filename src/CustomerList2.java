@@ -99,6 +99,7 @@ public class CustomerList2 {
 		newNode.next= null;
 		//Iterate through al the elements to add the new Node to the end of the list
 		Iterator temp = new Iterator();
+		temp.position= this.first;
 		while(temp.hasNext()) {
 			temp.next();
 		}
@@ -114,6 +115,7 @@ public class CustomerList2 {
 			/*
 			 * Look through this
 			 */
+			
 			int time = newNode.data.entry_time-temp.position.data.entry_time+300;
 			CustomerList2.idletime+=time;
 			if (time>CustomerList2.longestIdleTime) {
@@ -127,7 +129,7 @@ public class CustomerList2 {
 		}
 		
 	}
-	public class Iterator implements ListIterator<Object>{
+	public class Iterator implements ListIterator{
 
 		private Node position;
 		private Node previous;
