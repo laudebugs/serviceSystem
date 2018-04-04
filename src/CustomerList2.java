@@ -120,8 +120,6 @@ public class CustomerList2 {
 			while(temp.hasNext()) {
 				temp.next();
 			}
-			
-
 			temp.previous= temp.position;
 			temp.position.next=newNode;
 		}
