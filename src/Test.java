@@ -6,8 +6,8 @@ import java.util.*;
  * @author lbuga
  *
  */
-public class CustomerList2 {
-	//Try to minimize the global variables
+public class Test {
+	
 	public static int serveTime = 0;
 	private static boolean pm = false;
 	private static int previoushour = 0;
@@ -21,13 +21,13 @@ public class CustomerList2 {
 		return pm;
 	}
 	public static void setPm(boolean pm) {
-		CustomerList2.pm = pm;
+		Test.pm = pm;
 	}
 	public static int getHour() {
 		return previoushour;
 	}
 	public static void setPrevioushour(int hour) {
-		CustomerList2.previoushour = hour;
+		Test.previoushour = hour;
 	}
 
 	public class Customer {
@@ -39,6 +39,7 @@ public class CustomerList2 {
 			
 		}
 		public Customer(String info) {
+			System.out.println("Go here");
 			this.isTrue=true;
 			String [] lines = info.split("\n");
 			String temp = "";
@@ -50,20 +51,20 @@ public class CustomerList2 {
 			String[] times = lines[1].split(":");
 			//Parse the time into seconds
 			int extra_time = 0;
-			if (Integer.parseInt(times[1].trim())>previoushour && !CustomerList2.pm) {
-				CustomerList2.setPrevioushour(Integer.parseInt(times[1].trim()));
+			if (Integer.parseInt(times[1].trim())>previoushour && !Test.pm) {
+				Test.setPrevioushour(Integer.parseInt(times[1].trim()));
 			}
-			else if (Integer.parseInt(times[1].trim())<previoushour && !CustomerList2.pm){
-				CustomerList2.setPm(true);
+			else if (Integer.parseInt(times[1].trim())<previoushour && !Test.pm){
+				Test.setPm(true);
 			}
 			int time = Integer.parseInt(times[1].trim())*3600+Integer.parseInt(times[2].trim())*60+Integer.parseInt(times[2].trim());
 
-			if (CustomerList2.isPm()) {
+			if (Test.isPm()) {
 				time+= 12*3600;
 			}
 			this.setId(Integer.parseInt(temp));
 			this.setEntry_time(time);
-			CustomerList2.totalCustomers++;
+			Test.totalCustomers++;
 		}
 		public void setEntry_time(int entry_time) {
 			this.entry_time= entry_time;
@@ -81,19 +82,20 @@ public class CustomerList2 {
 	
 	public class Node{
 		public Customer data;
-		public Node next = null;
+		public Node next= endNode;
 	}
 	Customer end = new Customer();
-	//Node endNode = new Node();
+	Node endNode = new Node();
 	
 	private Node first;
-	public CustomerList2() {
-		this.setFirst(null);
+	public Test() {
+		this.setFirst(endNode);
 	}
 	public void setFirst(Node n) {
 		this.first = n;
 	}
 	public void addLast(Customer c) {
+		System.out.println("Hello World.begin");
 		Node newNode = new Node ();
 		newNode.data = c;
 		newNode.next= null;
@@ -105,27 +107,27 @@ public class CustomerList2 {
 		
 		//Add the waiting time for each new Customer added
 		temp.position.next=newNode;
-		if (newNode.data.getEntry_time()-temp.position.data.getEntry_time()<CustomerList2.serveTime//If time difference is less than service time
+		if (newNode.data.getEntry_time()-temp.position.data.getEntry_time()<Test.serveTime//If time difference is less than service time
 				) {
-			newNode.data.wait_time=temp.position.data.wait_time+(CustomerList2.serveTime-(newNode.data.getEntry_time()-temp.position.data.getEntry_time()));
-			CustomerList2.currentQueue++;
+			newNode.data.wait_time=temp.position.data.wait_time+(Test.serveTime-(newNode.data.getEntry_time()-temp.position.data.getEntry_time()));
+			Test.currentQueue++;
 		}
 		else {
 			/*
 			 * Look through this
 			 */
 			int time = newNode.data.entry_time-temp.position.data.entry_time+300;
-			CustomerList2.idletime+=time;
-			if (time>CustomerList2.longestIdleTime) {
-				CustomerList2.longestIdleTime=time;
+			Test.idletime+=time;
+			if (time>Test.longestIdleTime) {
+				Test.longestIdleTime=time;
 			}
 			newNode.data.wait_time=0;
-			if(CustomerList2.currentQueue>CustomerList2.longestQueue) {
-				CustomerList2.longestQueue = CustomerList2.currentQueue;
-				CustomerList2.currentQueue = 0;
+			if(Test.currentQueue>Test.longestQueue) {
+				Test.longestQueue = Test.currentQueue;
+				Test.currentQueue = 0;
 			}
 		}
-		
+		System.out.println("Hello World. end");
 	}
 	public class Iterator implements ListIterator<Object>{
 
@@ -134,21 +136,18 @@ public class CustomerList2 {
 		
 		public Iterator() {
 			position = null;
-			previous = null;
+			previous = endNode;
 					
 		}
 		@Override
-		public void add(Object obj) {
+		public void add(Object arg0) {
 			// TODO Auto-generated method stub
-			if(this.position==null) {
-				//Add the object to the first position using the AddFirst() Method
-			}
 			
 		}
 
 		@Override
 		public boolean hasNext() {
-			if (this.position.next == null) {
+			if (this.position.next== endNode) {
 				return false;
 			}
 			else {
@@ -162,19 +161,13 @@ public class CustomerList2 {
 			return false;
 		}
 
-		/*
-		This method moves the iterator to the next position
-		*/
 		@Override
 		public Object next() {
 			if (!this.hasNext()) {
 				throw new NoSuchElementException();
 			}
-			this.previous = position;
-			if (this.position ==null) {
-				position = first;
-			}
 			else {
+				this.previous =position;
 				this.position =position.next;
 			}
 			return position.data;//Returns a customer object with ID and entry time
@@ -201,17 +194,14 @@ public class CustomerList2 {
 		@Override
 		public void remove() {
 			if (this.position == first) {
-				removeFirst();
+				//removeFirst();
 			}
 			else {
 				//Sets the previous reference to the curent position
 				previous.next = position.next;
-				/*
-				 * Implement a method that updates the previous in an iterator
-				 */
-				//this.previous = updatePrevious(this.position);
+				this.previous = updatePrevious(this.position);
 			}
-			this.position = this.previous;
+			
 		}
 		/*
 		 * Updates the previous position when a node is deleted
@@ -234,13 +224,14 @@ public class CustomerList2 {
 	
 	
 	public static void main(String[]args) throws FileNotFoundException{
-		System.out.println("Hello World.");
+		
 		String f1path = "customersfile.txt";
 		String f2path = "queriesfile.txt";
 		FileReader customers = new FileReader(f1path);
 		FileReader queries = new FileReader (f2path);
 		BufferedReader readCustomers = new BufferedReader(customers);
 		BufferedReader readQueries = new BufferedReader(queries);
+		String result ="";
 		
 		
 		/*
@@ -248,13 +239,13 @@ public class CustomerList2 {
 		 * and parsing it as an integer
 		 */
 		try {
-			CustomerList2.serveTime = Integer.parseInt(readCustomers.readLine());
+			Test.serveTime = Integer.parseInt(readCustomers.readLine());
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		CustomerList2 clist = new CustomerList2();
+		Test clist = new Test();
 		try {
 			String temp = "";
 			String thisLine = "";
@@ -264,10 +255,9 @@ public class CustomerList2 {
 					//Create a new Customer and add the customer to the Customer LinkedList
 					
 					clist.addLast(clist.new Customer(temp));
-					
+					System.out.println("Hello World.");
 					//Reset the data read from the file
 					temp = "";
-					break;
 				}
 				else if (thisLine.isEmpty()) {
 					continue;
@@ -277,19 +267,12 @@ public class CustomerList2 {
 				}
 				
 			}
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		String result ="";
-
-		
-		try {
-			String thisLine = "";
-			result += readQueries.readLine()+ ": "+CustomerList2.totalCustomers +"\n";
-			result += readQueries.readLine()+ ": "+CustomerList2.longestIdleTime+"\n";
-			result += readQueries.readLine()+ ": "+CustomerList2.idletime+"\n";
-			result += readQueries.readLine()+ ": "+CustomerList2.longestQueue+"\n";
+			System.out.println("Hello World.");
+			thisLine = "";
+			result += readQueries.readLine()+ ": "+Test.totalCustomers +"\n";
+			result += readQueries.readLine()+ ": "+Test.longestIdleTime+"\n";
+			result += readQueries.readLine()+ ": "+Test.idletime+"\n";
+			result += readQueries.readLine()+ ": "+Test.longestQueue+"\n";
 			while((thisLine= readQueries.readLine())!=null) {
 				result+=thisLine + ": ";
 				String find_id = "";
@@ -298,26 +281,20 @@ public class CustomerList2 {
 						find_id+=thisLine.charAt(i);
 					}
 				}
-				Iterator temp = clist.new Iterator();
-				while(temp.hasNext()) {
-					if (temp.position.data.getId()==Integer.parseInt(find_id)) {
-						result += temp.position.data.getId()+"\n";
+				Iterator temp2 = clist.new Iterator();
+				while(temp2.hasNext()) {
+					if (temp2.position.data.getId()==Integer.parseInt(find_id)) {
+						result += temp2.position.data.getId()+"\n";
 						break;
 					}
 				}
 			}
-			
-		}
+		} 
 		catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("here");
 		}
 		System.out.println(result);
 		System.out.println("here");
-	}
-	public void removeFirst() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	
