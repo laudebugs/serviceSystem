@@ -2,8 +2,8 @@
 import java.io.*;
 import java.util.*;
 /**
- * Version 2.0
- * @author lbuga
+ * Version 4.0
+ * @author lbugasu
  *
  */
 public class CustomerList2 {
@@ -13,9 +13,37 @@ public class CustomerList2 {
 	private static int previoushour = 0;
 	private static int idletime =0;
 	private static int longestIdleTime = 0;
-	private static int totalCustomers = 0;
 	private static int longestQueue = 0;
 	private static int currentQueue = 0;
+	
+	/*
+	public int longest_queue() {
+		int count = 0;
+		Iterator it = new Iterator();
+		it.position= this.first;
+		while(it.hasNext()) {
+			
+			it.next();
+		}
+		return count;
+	}
+	*/
+	
+	/**
+	 * This method counts how many customers were served
+	 * @return the total number of customers served
+	 */
+	public int totalCustomers() {
+		int count = 0;
+		Iterator it = new Iterator();
+		it.position = this.first;
+		while(it.hasNext()) {
+			count++;
+			it.next();
+		}
+		count++; //Add the last customer to be served
+		return count;
+	}
 	
 	/*
 	 * This is the reference to the first node on the list
@@ -68,7 +96,6 @@ public class CustomerList2 {
 			}
 			this.setId(Integer.parseInt(temp));
 			this.setEntry_time(time);
-			CustomerList2.totalCustomers++;
 		}
 		public void setEntry_time(int entry_time) {
 			this.entry_time= entry_time;
@@ -305,15 +332,15 @@ public class CustomerList2 {
 			clist.addLast(clist.new Customer(temp));
 		} 
 		catch (IOException e) {
-			
 			e.printStackTrace();
 		}
+		
+		
 		String result ="";
 
-		
 		try {
 			String thisLine = "";
-			result += readQueries.readLine()+ ": "+CustomerList2.totalCustomers +"\n";
+			result += readQueries.readLine()+ ": "+clist.totalCustomers() +"\n";
 			result += readQueries.readLine()+ ": "+CustomerList2.longestIdleTime+"\n";
 			result += readQueries.readLine()+ ": "+CustomerList2.idletime+"\n";
 			result += readQueries.readLine()+ ": "+CustomerList2.longestQueue+"\n";
@@ -331,10 +358,11 @@ public class CustomerList2 {
 				
 				while(temp.hasNext()) {
 					if (temp.position.data.getId()==Integer.parseInt(find_id)) {
-						result += temp.position.data.getId()+"\n";
+						result += temp.position.data.wait_time+"\n";
 					}
 					temp.next();
 				}
+				
 			}
 			
 		}
