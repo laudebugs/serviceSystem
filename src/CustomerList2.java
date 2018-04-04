@@ -355,13 +355,20 @@ public class CustomerList2 {
 				
 				Iterator temp = clist.new Iterator();
 				temp.position=clist.first;
-				
+
 				while(temp.hasNext()) {
 					if (temp.position.data.getId()==Integer.parseInt(find_id)) {
 						result += temp.position.data.wait_time+"\n";
 					}
 					temp.next();
 				}
+				if(!temp.hasNext()) {
+					result += temp.position.data.wait_time+"\n";
+				}
+				
+				
+						 
+				 
 				
 			}
 			
