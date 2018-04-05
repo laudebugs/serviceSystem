@@ -374,8 +374,8 @@ public class CustomerQueue {
 	
 	
 	public static void main(String[]args) throws FileNotFoundException{
-		String f1path = "customersfile.txt";
-		String f2path = "queriesfile.txt";
+		String f1path = args[0];
+		String f2path = args[1];
 		FileReader customers = new FileReader(f1path);
 		FileReader queries = new FileReader (f2path);
 		BufferedReader readCustomers = new BufferedReader(customers);
