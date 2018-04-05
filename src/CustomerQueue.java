@@ -80,8 +80,6 @@ public class CustomerQueue {
 		public Customer data;
 		public Node next = null;
 	}
-	Customer end = new Customer();
-	
 	
 	public CustomerQueue() {
 		this.setFirst(null);
@@ -181,7 +179,6 @@ public class CustomerQueue {
 			}
 		return count2;
 	}
-	
 	
 	/**
 	 * This method counts how many customers were served
@@ -429,35 +426,48 @@ public class CustomerQueue {
 		
 		String result ="";
 
+		//Read the queries:
 		try {
 			String thisLine = "";
-			result += readQueries.readLine()+ ": "+clist.totalCustomers() +"\n";
-			result += readQueries.readLine()+ ": "+clist.getLongestIT()+"\n";
-			result += readQueries.readLine()+ ": "+clist.totalIT()+"\n";
-			result += readQueries.readLine()+ ": "+clist.longest_queue()+"\n";
-			while((thisLine= readQueries.readLine())!=null) {
-				result+=thisLine + ": ";
-				String find_id = "";
-				for(int i=0;i<thisLine.length();i++) {
-					if (Character.isDigit(thisLine.charAt(i))) {
-						find_id+=thisLine.charAt(i);
-					}
-				}
-				
-				Iterator temp = clist.new Iterator();
-				temp.position=clist.first;
 
-				while(temp.hasNext()) {
-					if (temp.position.data.getId()==Integer.parseInt(find_id)) {
+			while((thisLine= readQueries.readLine())!=null) {
+				
+				if (thisLine.contains("NUMBER-OF-CUSTOMERS-SERVED")){
+					result += thisLine+ ": "+clist.totalCustomers() +"\n";
+				}
+				else if (thisLine.contains("LONGEST-BREAK")) {
+					result += thisLine+ ": "+clist.getLongestIT()+"\n";
+				}
+				else if(thisLine.contains("IDLE-TIME")) {
+					result += thisLine+ ": "+clist.totalIT()+"\n";
+				}
+				else if(thisLine.contains("MAXIMUM-NUMBER-OF-PEOPLE-IN-QUEUE-AT-ANY-TIME")) {
+					result += thisLine+ ": "+clist.longest_queue()+"\n";
+				}
+				else {
+					result+=thisLine + ": ";
+					String find_id = "";
+					for(int i=0;i<thisLine.length();i++) {
+						if (Character.isDigit(thisLine.charAt(i))) {
+							find_id+=thisLine.charAt(i);
+						}
+					}
+					
+					Iterator temp = clist.new Iterator();
+					temp.position=clist.first;
+	
+					while(temp.hasNext()) {
+						if (temp.position.data.getId()==Integer.parseInt(find_id)) {
+							result += temp.position.data.wait_time+"\n";
+						}
+						temp.next();
+					}
+					if(!temp.hasNext() && temp.position.data.getId()==Integer.parseInt(find_id)) {
 						result += temp.position.data.wait_time+"\n";
 					}
-					temp.next();
 				}
-				if(!temp.hasNext() && temp.position.data.getId()==Integer.parseInt(find_id)) {
-					result += temp.position.data.wait_time+"\n";
-				}
+				thisLine ="";
 			}
-			
 		}
 		catch (IOException e) {
 			e.printStackTrace();
