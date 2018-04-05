@@ -2,13 +2,9 @@
 /CustomerList$Iterator.class
 /CustomerList$Node.class
 /CustomerList.class
-/CustomerList2$Customer.class
-/CustomerList2$Iterator.class
-/CustomerList2$Node.class
-/CustomerList2.class
+/CustomerQueue$Customer.class
+/CustomerQueue$Iterator.class
+/CustomerQueue$Node.class
+/CustomerQueue.class
 /LinkedList Noted.txt
-/Test$Customer.class
-/Test$Iterator.class
-/Test$Node.class
-/Test.class
 /serviceSystem/
